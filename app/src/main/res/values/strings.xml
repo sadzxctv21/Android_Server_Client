@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Server_Client</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="server_wifi">WIFI Server</string>
+    <string name="client_wifi">WIFI Client</string>
+    <string name="server_bluetooth">Bluetooth Server</string>
+    <string name="client_bluetooth">Bluetooth Client</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
