@@ -52,10 +52,19 @@ public class Tool {
 			STORE_DIR = savePath;
 		}
 
-		File file = new File(STORE_DIR + "/");
-		if (file.exists() == false) {
-			file.mkdirs();
+		if (fileName.indexOf("/")>0){
+			File file = new File(STORE_DIR + "/"+fileName.split("/")[0]+"/");
+			if (file.exists() == false) {
+				file.mkdirs();
+			}
+		}else{
+			File file = new File(STORE_DIR + "/");
+			if (file.exists() == false) {
+				file.mkdirs();
+			}
 		}
+
+
 		try {
 			File file2 = new File(STORE_DIR + "/", fileName + ".txt");
 			FileWriter fw = new FileWriter(file2, false);// turn:直接寫入 false:空白寫入
@@ -117,6 +126,25 @@ public class Tool {
 			data = "";
 		}
 		return data;
+	}
+
+	public static File[] getFileNameS(String path) {
+		File file = new File(STORE_DIR + "/"+path);
+		return file.listFiles();
+	}
+
+	public static void deleteFile(Context context,String FilePath) {
+		File externalFilesDir = context.getExternalFilesDir(null);
+		STORE_DIR = externalFilesDir.getAbsolutePath();
+		File file = new File(STORE_DIR + "/" + FilePath);
+		// 如果檔案路徑所對應的檔案存在，並且是一個檔案，則直接刪除
+		if (file.exists() && file.isFile()) {
+			file.delete();
+			Log.d("刪除狀態", "刪除檔案");
+		} else {
+			Log.d("刪除狀態", "檔案不存在");
+		}
+
 	}
 
 	public static boolean deleteDir(File dir) {

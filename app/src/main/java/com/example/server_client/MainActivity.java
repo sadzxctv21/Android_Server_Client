@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public static LinearLayout L01;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);//固定橫向
+        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);//固定橫向
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
@@ -141,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
                 transaction.commit();
                 switch (menuItem.getItemId()) {
                     case R.id.server_wifi:
-
                         SocketServerWIFI socketServerWIFI = new SocketServerWIFI();
                         transaction.replace(R.id.nav_host_fragment,socketServerWIFI);
                         break;
@@ -150,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
                         transaction.replace(R.id.nav_host_fragment,socketClientWIFI);
                         break;
                 }
-
                 return true;
             }
         });
@@ -353,21 +351,8 @@ public class MainActivity extends AppCompatActivity {
         return this.Switch;
     }
 
-    public static boolean Test = false;//測試
     public static String port="";
-    public boolean getTest( final LinearLayout L01, boolean Test) {
-        if (this.Test != Test) {
 
-            if (this.Test) {
-                addText(port + " : " + "+1模式開啟(請輸入0~255)", "", L01);
-            } else {
-                addText(port + " : " + "+1模式關閉", "", L01);
-            }
-
-        }
-
-        return this.Test;
-    }
 
     //-----------------------------------------------------------------------------------------
     public static EditText editText=null;
@@ -398,19 +383,6 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         } else if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
-            if (this.Test) {
-
-            } else {
-
-            }
-            if (Test == false) {
-                addText(port + " : " + "+1模式開啟(請輸入0~255)", "", L01);
-                Test = true;
-            } else {
-                addText(port + " : " + "+1模式關閉", "", L01);
-                Test = false;
-            }
-
             return true;
         }
 

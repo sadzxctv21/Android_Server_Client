@@ -32,17 +32,17 @@ import java.net.Socket;
 import java.util.Calendar;
 
 import static com.example.server_client.MainActivity.Switch;
-import static com.example.server_client.MainActivity.Test;
 import static com.example.server_client.MainActivity.buttonCastMsg;
 import static com.example.server_client.MainActivity.editText;
-import static com.example.server_client.MainActivity.port;
 import static com.example.server_client.MainActivity.L01;
 
 public class SocketClientWIFI extends Fragment {
+    String state = "客戶端";
 
     public SocketClientWIFI() {
-        port="客戶端";
+
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +53,7 @@ public class SocketClientWIFI extends Fragment {
     EditText e01, e02;
     ScrollView Sc01;
     Context context;
+    socketClient socketClient= new socketClient();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,24 +63,24 @@ public class SocketClientWIFI extends Fragment {
 
         b01 = (Button) root.findViewById(R.id.b01);
         b02 = (Button) root.findViewById(R.id.b02);
-       buttonCastMsg = (Button) root.findViewById(R.id.buttonCastMsg);
+        buttonCastMsg = (Button) root.findViewById(R.id.buttonCastMsg);
 
         e01 = (EditText) root.findViewById(R.id.e01);//輸入IP
         e02 = (EditText) root.findViewById(R.id.e02);//輸入Port
-       editText = (EditText) root.findViewById(R.id.enterText);//輸入文字
+        editText = (EditText) root.findViewById(R.id.enterText);//輸入文字
 
-        Sc01 = (ScrollView) root. findViewById(R.id.Sc01);
-        L01 = (LinearLayout)  root.findViewById(R.id.L01);
+        Sc01 = (ScrollView) root.findViewById(R.id.Sc01);
+        L01 = (LinearLayout) root.findViewById(R.id.L01);
 
         b01.setOnClickListener(b01());
         b02.setOnClickListener(b02());
         buttonCastMsg.setOnClickListener(b03());
         L01.setOnLongClickListener(Clear());
 
-        context=((MainActivity)getActivity()).getContext();
+        context = ((MainActivity) getActivity()).getContext();
 
-        e01.setText(Tool.read(context,"IP"));
-        e02.setText(Tool.read(context,"Port"));
+        e01.setText(Tool.read(context, "IP"));
+        e02.setText(Tool.read(context, "Port"));
 
         int SDK_INT = android.os.Build.VERSION.SDK_INT;
         if (SDK_INT > 8) {
@@ -90,7 +91,8 @@ public class SocketClientWIFI extends Fragment {
             // Where you get exception write that code inside this.
         }
 
-     //   new Updata().start();
+
+
         return root;
     }
 
@@ -98,24 +100,26 @@ public class SocketClientWIFI extends Fragment {
     View.OnClickListener b01() {
         return new View.OnClickListener() {
             public void onClick(View v) {
-                String IP=e01.getText().toString();
-                int Port=0;
+                String IP = e01.getText().toString();
+                int Port = 0;
                 try {
-                    Port=Integer.parseInt(e02.getText().toString());
-                }catch (Exception e){
-                    ((MainActivity)getActivity()).enterText("請輸入正確Port");
+                    Port = Integer.parseInt(e02.getText().toString());
+                } catch (Exception e) {
+                    ((MainActivity) getActivity()).enterText("請輸入正確Port");
                 }
 
-                if (((MainActivity)getActivity()).haveInternet()) {
-                    if(clientSocket==null){
-                        if (IP.length()!=0&Port!=0){
-                            new readData(IP, Port).start();
+                if (((MainActivity) getActivity()).haveInternet()) {
+                    if (socketClient.clientSocket == null) {
+                        if (IP.length() != 0 & Port != 0) {
+                            socketClient.setIP_Port(IP, Port);
+                            socketClient.start();
+
                         }
 
                     }
 
-                }else {
-                    ((MainActivity)getActivity()).enterText("請開啟WIFI功能");
+                } else {
+                    ((MainActivity) getActivity()).enterText("請開啟WIFI功能");
                 }
 
             }
@@ -129,11 +133,11 @@ public class SocketClientWIFI extends Fragment {
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.commit();
                 SocketServerWIFI socketServerWIFI = new SocketServerWIFI();
-                transaction.replace(R.id.nav_host_fragment,socketServerWIFI);
+                transaction.replace(R.id.nav_host_fragment, socketServerWIFI);
                 try {
-                    if (clientSocket!=null){
-                        clientSocket.shutdownInput();
-                        clientSocket.shutdownOutput();
+                    if (socketClient.clientSocket != null) {
+                        socketClient.clientSocket.shutdownInput();
+                        socketClient.clientSocket.shutdownOutput();
                     }
 
                 } catch (IOException e) {
@@ -146,7 +150,7 @@ public class SocketClientWIFI extends Fragment {
     View.OnClickListener b03() {
         return new View.OnClickListener() {
             public void onClick(View v) {
-                castMsg(editText.getText().toString());
+                socketClient.castMsg(editText.getText().toString());
             }
         };
     }//傳送字串
@@ -155,80 +159,33 @@ public class SocketClientWIFI extends Fragment {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ((MainActivity)getActivity()).Clear(L01);
+                ((MainActivity) getActivity()).Clear(L01);
                 return false;
             }
         };
     }//清除字串
 
-    public void castMsg(final String text) {
-        // 取得網路輸出串流
-        //傳送資料
-        if (clientSocket!=null){
-            byte[] temp=new byte[1];
-            try {
-                if (Switch == true) {
-                    if (Test==true) {
-                        try {
-                            Integer.parseInt(text);
-                            temp = (text).getBytes();
-                        } catch (Exception e) {
 
-                            ((MainActivity)getActivity()).enterText( "傳送 : " + "請輸入0~255");
-                            e.printStackTrace();
-                        }
-                    }else{
-                        temp = (text).getBytes();
-                    }
-
-                } else {
-                    if (Test==true) {
-                        try {
-                            temp = new byte[1];
-                            temp[0] = (byte) Integer.parseInt(text, 16);
-                        }catch ( Exception e){
-                            e.printStackTrace();
-                            ((MainActivity)getActivity()).enterText("傳送 : " + "請輸入0~255");
-                        }
-                    }else {
-                        int n = 0;
-                        n = text.split(" ").length;
-
-                        temp = new byte[n];
-                        for (int a = 0; a < n; a++) {
-                            temp[a] = (byte) Integer.parseInt(text.split(" ")[a], 16);
-                        }
-                    }
-
-                }
-
-                ((MainActivity)getActivity()).fullScroll(Sc01);
-                ((MainActivity)getActivity()). addText(port+" : " + text, "",L01);
-
-
-                OutputStream out = clientSocket.getOutputStream();// 寫入訊息
-                out.write(temp, 0, temp.length);// 立即發送   //  "|n"
-                out.flush();
-                //     Log.d("aaaaaaaa",temp.length+"  aa");
-
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-
-
-    Socket clientSocket;
-    public class readData extends Thread {
+    public class socketClient extends Thread {
+        Socket clientSocket;
         String IP = "";
         int Port = 0;
-        String line = "";
+        String data = "";
 
-        public readData(String IP, int Port) {
+        /**
+         * 如果只是需要接收的資料，只要修改此處
+         * @param dataO 未轉換資料
+         * @param data 已轉換資料
+         */
+        public void Program(byte[] dataO,String data){
+            //程式
+        }
+
+        public socketClient() {
+
+        }
+
+        public void setIP_Port(String IP, int Port){
             this.IP = IP;
             this.Port = Port;
         }
@@ -242,92 +199,50 @@ public class SocketClientWIFI extends Fragment {
                 clientSocket = new Socket(serverIp, serverPort);
                 Log.v("連線狀況", "已連線");
                 byte[] bis = new byte[1024];
-                byte[] bis2;
                 InputStream in = clientSocket.getInputStream();
-                ((MainActivity)getActivity()).addText("系統：連線成功", IP,L01);
+                ((MainActivity) getActivity()).addText("系統：連線成功", IP, L01);
 
-                ((MainActivity)getActivity()).displayTextView(null,t01,"客戶端(已連線)");
-                ((MainActivity)getActivity()).enterText( "連線成功");
+                ((MainActivity) getActivity()).displayTextView(null, t01, "客戶端(已連線)");
+                ((MainActivity) getActivity()).enterText("連線成功");
 
 
-                Tool.save(context,IP,"IP");
-                Tool.save(context,Port+"","Port");
+                Tool.save(context, IP, "IP");
+                Tool.save(context, Port + "", "Port");
                 // 取得網路輸入串流
                 int n = 0;
                 while ((n = in.read(bis)) != -1) {
-            //       Switch= ((MainActivity)getActivity()).getSwitch(b03,Switch);
-            //        Test= ((MainActivity)getActivity()).getTest("客戶端",L01,Test);
-                    bis2 = new byte[n];
-                    for (int a = 0; a < n; a++) {
-                        bis2[a] = bis[a];
-                    }
-                    if (Switch == true) {//字串接收
-                        line = new String(bis2);
+                    if (Switch == true) {
+                        //字串接收
+                        data = new String(bis);
                     } else {
-                        line = "";
+                        //位元接收
+                        data = "";
                         for (int a = 0; a < n; a++) {
-                            if (a == 0) {
-                                line = line + Conversion(Integer.parseInt(bis2[a] + ""));
-                            } else {
-                                line = line + " " + Conversion(Integer.parseInt(bis2[a] + ""));
-                            }
+                            data = data + " " + Conversion(Integer.parseInt(bis[a] + ""));
                         }
+                        data = data.substring(1);
                     }
-
-                    if (line.equals("") != true) {
-                        ((MainActivity)getActivity()).addText("伺服端：" + line,"",L01);
-                        ((MainActivity)getActivity()).fullScroll(Sc01);
-
+                    if (data.equals("") != true) {
+                        Program(bis,data);
+                        ((MainActivity) getActivity()).addText("客戶端：" + data, IP, L01);
+                        ((MainActivity) getActivity()).fullScroll(Sc01);
                     }
-
-
-
-                    if (Test) {
-                        if (Switch == true) {//字串接收
-
-                            int TestInt = 0;
-                            try {
-                                TestInt = Integer.parseInt(line);
-                                if ((TestInt + 1) < 256) {
-                                    castMsg((TestInt + 1) + "");
-                                }
-                                if (TestInt==255|TestInt==254){
-                                    Test=false;
-                                    ((MainActivity)getActivity()). addText(port+" : " +"+1模式關閉", "",L01);
-                                }
-
-                            } catch (Exception e) {
-                            }
-                        } else {
-                            Log.d("aaaaaaa",bis2[0] +"  ");
-                            if (256+Integer.parseInt(bis2[0]+"")+1< 256) {
-                                castMsg((Conversion(Integer.parseInt(bis2[0] + "") + 1)));
-                            }
-                            if (256+Integer.parseInt(bis2[0]+"")==255|256+Integer.parseInt(bis2[0]+"")==254){
-                                Test=false;
-                                ((MainActivity)getActivity()). addText(port+" : " +"+1模式關閉", "",L01);
-                            }
-                        }
-                    }
-
                     try {
                         Thread.sleep(200);
                     } catch (Exception e) {
 
                     }
-
-
                 }
-                ((MainActivity)getActivity()).addText("系統：斷開連線","伺服端",L01);
-                ((MainActivity)getActivity()).displayTextView(null,t01,"客戶端(未連線)");
+                ((MainActivity) getActivity()).addText("系統：斷開連線", "伺服端", L01);
+                ((MainActivity) getActivity()).displayTextView(null, t01, "客戶端(未連線)");
                 Log.v("連線狀況", "連線失敗");
-                clientSocket=null;
+                clientSocket = null;
             } catch (IOException e) {
                 e.printStackTrace();
-                ((MainActivity)getActivity()).addText("系統：連線失敗","伺服端",L01);
-                ((MainActivity)getActivity()).displayTextView(null,t01,"客戶端(未連線)");
+                ((MainActivity) getActivity()).addText("系統：連線失敗", "伺服端", L01);
+                ((MainActivity) getActivity()).displayTextView(null, t01, "客戶端(未連線)");
                 Log.v("連線狀況", "連線失敗");
-                clientSocket=null;
+                clientSocket = null;
             }
         }
 
@@ -343,33 +258,34 @@ public class SocketClientWIFI extends Fragment {
             }
             return t;
         }
-    }
-    public class Updata extends Thread {
 
-
-        public Updata() {
-
-        }
-
-        @Override
-        public void run() {
-            while (true){
+        public void castMsg(final String text) {
+            // 取得網路輸出串流
+            //傳送資料
+            if (clientSocket != null) {
+                byte[] temp ;
                 try {
-                    Thread.sleep(50);
-                }catch (Exception e){
-
-                }
-                /*
-                if (b03!=null&L01!=null){
-                    try {
-                        Switch= ((MainActivity)getActivity()).getSwitch(b03,Switch);
-                        Test= ((MainActivity)getActivity()).getTest("客戶端",L01,Test);
-                    }catch (Exception e){
-
+                    if (Switch == true) {
+                        temp = (text).getBytes();
+                    } else {
+                        int n = 0;
+                        n = text.split(" ").length;
+                        temp = new byte[n];
+                        for (int a = 0; a < n; a++) {
+                            temp[a] = (byte) Integer.parseInt(text.split(" ")[a], 16);
+                        }
                     }
 
+                    ((MainActivity) getActivity()).fullScroll(Sc01);
+                    ((MainActivity) getActivity()).addText(state + " : " + text, "", L01);
+
+
+                    OutputStream out = clientSocket.getOutputStream();// 寫入訊息
+                    out.write(temp, 0, temp.length);// 立即發送   //  "|n"
+                    out.flush();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                */
             }
         }
     }
