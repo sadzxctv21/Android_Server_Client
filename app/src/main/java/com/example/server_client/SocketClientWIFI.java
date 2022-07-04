@@ -109,14 +109,10 @@ public class SocketClientWIFI extends Fragment {
                 }
 
                 if (((MainActivity) getActivity()).haveInternet()) {
-                    if (socketClient.clientSocket == null) {
-                        if (IP.length() != 0 & Port != 0) {
-                            socketClient.setIP_Port(IP, Port);
-                            socketClient.start();
 
-                        }
+                        socketClient=new socketClient();
+                        socketClient.start(IP, Port);
 
-                    }
 
                 } else {
                     ((MainActivity) getActivity()).enterText("請開啟WIFI功能");
@@ -185,9 +181,10 @@ public class SocketClientWIFI extends Fragment {
 
         }
 
-        public void setIP_Port(String IP, int Port){
+        public void start(String IP, int Port){
             this.IP = IP;
             this.Port = Port;
+            start();
         }
 
         @Override
@@ -198,7 +195,9 @@ public class SocketClientWIFI extends Fragment {
                 int serverPort = Port;
                 clientSocket = new Socket(serverIp, serverPort);
                 Log.v("連線狀況", "已連線");
-                byte[] bis = new byte[1024];
+
+                int byteMax=1024;
+                byte[] bis = new byte[byteMax];
                 InputStream in = clientSocket.getInputStream();
                 ((MainActivity) getActivity()).addText("系統：連線成功", IP, L01);
 
@@ -210,6 +209,7 @@ public class SocketClientWIFI extends Fragment {
                 Tool.save(context, Port + "", "Port");
                 // 取得網路輸入串流
                 int n = 0;
+
                 while ((n = in.read(bis)) != -1) {
                     if (Switch == true) {
                         //字串接收
@@ -232,17 +232,20 @@ public class SocketClientWIFI extends Fragment {
                     } catch (Exception e) {
 
                     }
+                    bis = new byte[byteMax];
                 }
                 ((MainActivity) getActivity()).addText("系統：斷開連線", "伺服端", L01);
                 ((MainActivity) getActivity()).displayTextView(null, t01, "客戶端(未連線)");
                 Log.v("連線狀況", "連線失敗");
-                clientSocket = null;
+                interrupt();
+                //clientSocket = null;
             } catch (IOException e) {
                 e.printStackTrace();
                 ((MainActivity) getActivity()).addText("系統：連線失敗", "伺服端", L01);
                 ((MainActivity) getActivity()).displayTextView(null, t01, "客戶端(未連線)");
                 Log.v("連線狀況", "連線失敗");
-                clientSocket = null;
+                interrupt();
+                //clientSocket = null;
             }
         }
 
@@ -285,6 +288,7 @@ public class SocketClientWIFI extends Fragment {
                     out.flush();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    ((MainActivity) getActivity()).addText("輸入錯誤，請輸入00~FF", "系統", L01);
                 }
             }
         }

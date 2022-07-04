@@ -93,7 +93,8 @@ public class socketServer extends Thread {
                             + (socket.getInetAddress().getAddress()[3] & 0xFF));
                     InputStream in = socket.getInputStream();
 
-                    byte[] bis = new byte[1024];
+                    int byteMax=1024;
+                    byte[] bis = new byte[byteMax];
                     int n = 0;
                     while ((n = in.read(bis)) != -1) {
                         if (Switch == true) {
@@ -115,6 +116,7 @@ public class socketServer extends Thread {
                         } catch (Exception e) {
 
                         }
+                        bis = new byte[byteMax];
                     }
 
                 } catch (Exception e) {

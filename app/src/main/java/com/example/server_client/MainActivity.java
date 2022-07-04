@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     Group group;
     MainActivity mainActivity=MainActivity.this;
     public static LinearLayout L01;
+    public static int status_bar_height = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);//固定橫向
@@ -77,14 +78,10 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.nav_view);
         navigationView2 = findViewById(R.id.nav_view2);
 
-        int status_bar_height = 0;
         int resourceId =getApplicationContext().getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (resourceId > 0) {
             status_bar_height = getApplicationContext().getResources().getDimensionPixelSize(resourceId);
         }
-
-
-        Log.d("aaaaaaa",status_bar_height+"");
 
 
         mAppBarConfiguration = new AppBarConfiguration.Builder()
@@ -97,10 +94,6 @@ public class MainActivity extends AppCompatActivity {
         CurrentMenuItem = 0;//目前Navigation項目位置
         navigationView.getMenu().getItem(CurrentMenuItem).setChecked(true);//設置Navigation目前項目被選取狀態
         setUpNavigation();
-//--------------------------------------------------
-
-   //     setUpNavigation2();
-
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
@@ -117,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             // Where you get exception write that code inside this.
         }
 
-        AutomaticInput detailFragment = new AutomaticInput(status_bar_height,this);
+        AutomaticInput detailFragment = new AutomaticInput(this);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .add(R.id.nav_view2, detailFragment)
@@ -133,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                Log.d("zzzzzzzzzzz", menuItem.toString() + "");
                 drawer.closeDrawer(GravityCompat.START);
 
                 FragmentManager manager =getSupportFragmentManager();
@@ -148,22 +140,16 @@ public class MainActivity extends AppCompatActivity {
                         SocketClientWIFI socketClientWIFI = new SocketClientWIFI();
                         transaction.replace(R.id.nav_host_fragment,socketClientWIFI);
                         break;
+                    case R.id.switch_t:
+                        buttonCastMsg.setText("字串傳輸");
+                        Switch = true;
+                        break;
+                    case R.id.switch_f:
+                        buttonCastMsg.setText("位元傳輸");
+                        Switch = false;
+                        break;
                 }
                 return true;
-            }
-        });
-
-    }
-
-    private void setUpNavigation2() {
-        // Set navigation item selected listener
-        navigationView2.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
-                Log.d("zzzzzzzzzzz", menuItem.toString() + "");
-                drawer.closeDrawer(GravityCompat.END);
-                return false;
             }
         });
 

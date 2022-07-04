@@ -15,6 +15,15 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/client_wifi" />
         <item
+            android:id="@+id/switch_t"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="切換至字串傳輸" />
+        <item
+            android:id="@+id/switch_f"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="切換至位元傳輸" />
+        <!--
+        <item
             android:id="@+id/server_bluetooth"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/server_bluetooth" />
@@ -22,6 +31,9 @@
             android:id="@+id/client_bluetooth"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/client_bluetooth" />
+
+        -->
+
 
     </group>
 </menu>

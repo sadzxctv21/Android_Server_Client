@@ -130,7 +130,13 @@ public class Tool {
 
 	public static File[] getFileNameS(String path) {
 		File file = new File(STORE_DIR + "/"+path);
+		if (file.exists() == false) {
+			file.mkdirs();
+		}
+
 		return file.listFiles();
+
+
 	}
 
 	public static void deleteFile(Context context,String FilePath) {

@@ -285,7 +285,8 @@ public class SocketServerWIFI extends Fragment {
 
                         InputStream in = socket.getInputStream();
 
-                        byte[] bis = new byte[1024];
+                        int byteMax=1024;
+                        byte[] bis = new byte[byteMax];
                         int n = 0;
                         while ((n = in.read(bis)) != -1) {
                             if (Switch == true) {
@@ -309,6 +310,7 @@ public class SocketServerWIFI extends Fragment {
                             } catch (Exception e) {
 
                             }
+                            bis = new byte[byteMax];
                         }
 
                     } catch (Exception e) {

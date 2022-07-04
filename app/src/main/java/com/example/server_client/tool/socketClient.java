@@ -46,7 +46,8 @@ public class socketClient extends Thread {
             int serverPort = Port;
             clientSocket = new Socket(serverIp, serverPort);
             Log.v("連線狀況", "已連線");
-            byte[] bis = new byte[1024];
+            int byteMax=1024;
+            byte[] bis = new byte[byteMax];
             InputStream in = clientSocket.getInputStream();
             // 取得網路輸入串流
             int n = 0;
@@ -70,6 +71,7 @@ public class socketClient extends Thread {
                 } catch (Exception e) {
 
                 }
+                bis = new byte[byteMax];
             }
             Log.v("連線狀況", "連線失敗");
             clientSocket = null;

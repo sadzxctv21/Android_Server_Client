@@ -1,7 +1,5 @@
 package com.example.server_client;
 
-import static com.example.server_client.MainActivity.L01;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -10,7 +8,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,15 +17,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.ArrayList;
+
+import static com.example.server_client.MainActivity.status_bar_height;
+
 
 public class AutomaticInput extends Fragment {
 
     int status_bar_height=0;
     MainActivity mainActivity;
     Context context;
-    public AutomaticInput(int status_bar_height,MainActivity mainActivity) {
-        this.status_bar_height=status_bar_height;
+    public AutomaticInput(MainActivity mainActivity) {
         this.mainActivity=mainActivity;
     }
     @Override
