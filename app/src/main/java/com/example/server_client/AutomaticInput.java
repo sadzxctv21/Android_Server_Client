@@ -104,7 +104,6 @@ public class AutomaticInput extends Fragment {
 
                 input1.setText(data.text);
                 input2.setText(data.annotation);
-
                 dialog.setView(viewInflated);
                 dialog.setPositiveButton("修改", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
