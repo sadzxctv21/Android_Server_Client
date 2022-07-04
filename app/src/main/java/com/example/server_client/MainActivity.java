@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     public static LinearLayout L01;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);//固定橫向
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT);//固定橫向
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
