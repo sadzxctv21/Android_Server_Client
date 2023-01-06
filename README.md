@@ -2,6 +2,7 @@
 測試TCP
 
 APK下載(https://github.com/sadzxctv21/Android_Server_Client/raw/master/app/release/app-release.apk)
+![3Z9HSCW4MI](https://user-images.githubusercontent.com/78857110/211052500-1e7c57e1-3c86-47b4-9d8a-e85f7284c16d.png)
 
 
 伺服器介面
